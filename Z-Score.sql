@@ -1,0 +1,18 @@
+With ESTATISTICAS AS (
+    Select 
+        AVG(TEMPO_ENTREGA)   AS MEDIA,
+        STDEV(TEMPO_ENTREGA) AS DESVIO
+    From 
+		PEDIDOS
+)
+Select 
+    P.ID_PEDIDO										  AS ID_PEDIDO,
+    P.CLIENTE										  AS CLIENTE,
+    P.TEMPO_ENTREGA									  AS TEMPO_ENTREGA,
+    (P.TEMPO_ENTREGA - E.MEDIA) / NULLIF(E.DESVIO, 0) AS ZSCORE
+From 
+	PEDIDOS P
+Cross Join 
+	ESTATISTICAS E
+Where 
+	P.DATA_ENTREGA Is Not Null;
